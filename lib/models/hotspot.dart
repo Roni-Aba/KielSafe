@@ -11,5 +11,5 @@ class Hotspot {
     required this.title,
     required this.description,
     required this.position
-})
+});
 }
