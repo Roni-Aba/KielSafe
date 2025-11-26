@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const KielSafeApp());
+  runApp(const kielsafeApp());
 }
 
-class KielSafeApp extends StatelessWidget {
-  const KielSafeApp({super.key});
+class kielsafeApp extends StatelessWidget {
+  const kielsafeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'KielSafe',
+      title: 'kielsafe',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const KielSafeHomePage(),
+      home: const kielsafeHomePage(),
     );
   }
 }
 
-class KielSafeHomePage extends StatelessWidget {
-  const KielSafeHomePage({super.key});
+class kielsafeHomePage extends StatelessWidget {
+  const kielsafeHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('KielSafe'),
+        title: const Text('kielsafe'),
       ),
       body: const Center(
         child: Padding(
@@ -39,7 +39,7 @@ class KielSafeHomePage extends StatelessWidget {
               Icon(Icons.directions_bike, size: 72),
               SizedBox(height: 24),
               Text(
-                'Willkommen bei KielSafe 🚲',
+                'Willkommen bei kielsafe 🚲',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
