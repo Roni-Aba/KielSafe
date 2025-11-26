@@ -8,15 +8,20 @@ class MapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Mittelpunkt: z.B. Kiel Hbf
-    final kielCenter = LatLng(54.3213, 10.1349);
+    final userPosition = LatLng(54.3213, 10.1349);
 
+    final hotspots = [
+      LatLng(54.3230, 10.1355), // Hotspot 1
+      LatLng(54.3180, 10.1300), // Hotspot 2
+      LatLng(54.3250, 10.1400), // Hotspot 3
+    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('KielSafe – Karte'),
       ),
       body: FlutterMap(
         options: MapOptions(
-          initialCenter: kielCenter,
+          initialCenter: userPosition,
           initialZoom: 13,
         ),
         children: [
@@ -30,7 +35,7 @@ class MapScreen extends StatelessWidget {
           MarkerLayer(
             markers: [
               Marker(
-                point: kielCenter,
+                point: userPosition,
                 width: 40,
                 height: 40,
                 child: const Icon(
@@ -38,6 +43,17 @@ class MapScreen extends StatelessWidget {
                   size: 40,
                 ),
               ),
+
+              for (final point in hotspots)
+                Marker(
+                  point:point,
+                  width:40,
+                  height:40,
+                  child:const Icon(
+                    Icons.warning,
+                    size:32),
+                )
+
             ],
           ),
         ],
