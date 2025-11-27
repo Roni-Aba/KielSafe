@@ -41,6 +41,21 @@ class _MapScreenState extends State<MapScreen> {
   bool _isRequestingLocation = false;
   String? _locationError;
 
+  // Radius um einen Hotspot (in Metern), ab dem gewarnt wird
+
+
+  // Distanz-Berechnung (aus latlong2)
+  final Distance _distance = const Distance();
+
+  // Merken, für welche Hotspots bereits gewarnt wurde, damit keine Dauer-Spam-Nachrichten kommen
+
+
+  static const double _dangerRadiusMeters = 1000.0;
+
+
+
+  final Set<int> _notifiedHotspots = <int>{};
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +97,9 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         _userPosition = LatLng(pos.latitude, pos.longitude);
       });
+      if (_userPosition != null) {
+        _checkProximityToHotspots(_userPosition!);
+      }
     } catch (e) {
       setState(() {
         _locationError = 'Fehler beim Laden des Standorts: $e';
@@ -91,6 +109,37 @@ class _MapScreenState extends State<MapScreen> {
         setState(() {
           _isRequestingLocation = false;
         });
+      }
+    }
+  }
+
+  void _checkProximityToHotspots(LatLng position) {
+    // Wenn kein Scaffold vorhanden ist (z.B. während Build), keine Nachricht anzeigen
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (messenger == null) return;
+
+    for (final hotspot in _hotspots) {
+      final distanceInMeters = _distance.as(
+        LengthUnit.Meter,
+        position,
+        hotspot.position,
+      );
+
+      if (distanceInMeters <= _dangerRadiusMeters) {
+        // Nur warnen, wenn dieser Hotspot noch nicht gemeldet wurde
+        if (_notifiedHotspots.add(hotspot.id)) {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(
+                'Achtung! Du bist in der Nähe von "${hotspot.title}".',
+              ),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      } else {
+        // Wenn man wieder weit genug weg ist, kann dieser Hotspot in Zukunft erneut melden
+        _notifiedHotspots.remove(hotspot.id);
       }
     }
   }
@@ -116,6 +165,13 @@ class _MapScreenState extends State<MapScreen> {
             options: MapOptions(
               initialCenter: center,
               initialZoom: 13,
+              // Tipp auf die Karte verschiebt den User-Pin
+              onTap: (tapPosition, latLng) {
+                setState(() {
+                  _userPosition = latLng;
+                });
+                _checkProximityToHotspots(latLng);
+              },
             ),
             children: [
               _buildTileLayer(),

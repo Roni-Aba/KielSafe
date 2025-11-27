@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
 
 class Hotspot {
-  final num id;
+  final int id;
   final String title;
   final String description;
   final LatLng position;
